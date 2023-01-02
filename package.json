@@ -1,5 +1,5 @@
 {
-  "name": "razorpay_package",
+  "name": "payment_gateway",
   "version": "Meta_Version",
   "description": "",
   "main": "dist/index.cjs.js",
