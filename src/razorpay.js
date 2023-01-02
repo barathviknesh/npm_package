@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 
-const loadRazorpay = ({
+const razorpayCall = ({
     orderAmount,
     name,
     description,
@@ -10,7 +10,8 @@ const loadRazorpay = ({
     preFillContactNumber,
     notesAddress,
     theme,
-    setLoading
+    setLoading,
+    baseURL
 }) => {
     const script = document.createElement('script');
     script.src = 'https://checkout.razorpay.com/v1/checkout.js';
@@ -20,9 +21,18 @@ const loadRazorpay = ({
     script.onload = async () => {
         try {
             setLoading(true);
-            const result = await axios.post(process.env.BASE_URL + '/api/v1/payment/create-order', {
-                amount: orderAmount,
-            });
+       
+            const result = await fetch(baseURL + '/api/v1/payment/create-order', {
+                Method: 'POST',
+                Headers: {
+                    Accept: 'application.json',
+                    'Content-Type': 'application/json'
+                },
+                Body: {
+                    amount: orderAmount,
+                },
+                Cache: 'default'
+            })
 
             const { amount, id, currency } = result.data.data;
             const { data } = await axios.get(process.env.BASE_URL + '/api/v1/payment/get-razorpay-key');
@@ -66,7 +76,7 @@ const loadRazorpay = ({
         }
     };
     document.body.appendChild(script);
-};
+}
 
+export default razorpayCall
 
-export default loadRazorpay;

@@ -1,3 +1,1 @@
-import loadRazorpay from "./razorpay";
-
-export { loadRazorpay };
+export { default as razorpayCall } from './razorpay';

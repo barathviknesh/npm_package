@@ -8,7 +8,7 @@ echo "install npm"
 
 # pwd
 
-npm install
+npm install -f
 
 git add .
 
@@ -40,7 +40,7 @@ echo "start publishing"
 
 npm install -g npm-cli-login
 
-npm-cli-login -u ainqa-qdm -p welcome@qdm2 -e itadmin@ainqa.com
+npm-cli-login -u venkat_q -p welcome@qdm2 -e venkatareddy.yakkanmti@ainqa.com
 # npm-cli-login -u kumaravelcrayond -p crayond@12345 -e kumaravel@crayond.co
 
 npm publish
