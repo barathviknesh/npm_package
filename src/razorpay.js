@@ -19,7 +19,7 @@ const razorpayCall = ({
     script.onload = async () => {
         try {
             setLoading(true);
-       
+
             const result = await fetch(baseURL + '/api/v1/payment/create-order', {
                 Method: 'POST',
                 Headers: {
@@ -33,7 +33,15 @@ const razorpayCall = ({
             })
 
             const { amount, id, currency } = result.data.data;
-            const { data } = await axios.get(baseURL + '/api/v1/payment/get-razorpay-key');
+
+            const { data } = await fetch(baseURL + '/api/v1/payment/get-razorpay-key', {
+                Method: 'GET',
+                Headers: {
+                    Accept: 'application.json',
+                    'Content-Type': 'application/json'
+                },
+                Cache: 'default'
+            })
 
             const options = {
                 key: data.data,
@@ -43,13 +51,23 @@ const razorpayCall = ({
                 description: description,
                 order_id: id,
                 handler: async function (response) {
-                    const result = await axios.post(baseURL + '/api/v1/payment/pay-order', {
-                        amount: amount,
-                        razorpayPaymentId: response.razorpay_payment_id,
-                        razorpayOrderId: response.razorpay_order_id,
-                        razorpaySignature: response.razorpay_signature,
-                        paymentType: 1
-                    });
+
+                    const result = await fetch(baseURL + '/api/v1/payment/pay-order', {
+                        Method: 'POST',
+                        Headers: {
+                            Accept: 'application.json',
+                            'Content-Type': 'application/json'
+                        },
+                        Body: {
+                            amount: amount,
+                            razorpayPaymentId: response.razorpay_payment_id,
+                            razorpayOrderId: response.razorpay_order_id,
+                            razorpaySignature: response.razorpay_signature,
+                            paymentType: 1
+                        },
+                        Cache: 'default'
+                    })
+
                     alert(result.data.message);
                 },
                 prefill: {

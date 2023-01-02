@@ -42,7 +42,7 @@ const razorpayCall = ({
       } = result.data.data;
       const {
         data
-      } = await axios.get(process.env.BASE_URL + '/api/v1/payment/get-razorpay-key');
+      } = await axios.get(baseURL + '/api/v1/payment/get-razorpay-key');
       const options = {
         key: data.data,
         amount: amount.toString(),
@@ -51,7 +51,7 @@ const razorpayCall = ({
         description: description,
         order_id: id,
         handler: async function (response) {
-          const result = await axios.post(process.env.BASE_URL + '/api/v1/payment/pay-order', {
+          const result = await axios.post(baseURL + '/api/v1/payment/pay-order', {
             amount: amount,
             razorpayPaymentId: response.razorpay_payment_id,
             razorpayOrderId: response.razorpay_order_id,
