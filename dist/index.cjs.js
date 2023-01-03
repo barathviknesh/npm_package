@@ -12,7 +12,8 @@ const razorpayCall = ({
   notesAddress,
   theme,
   setLoading,
-  baseURL
+  baseURL,
+  paymentType
 }) => {
   const script = document.createElement('script');
   script.src = 'https://checkout.razorpay.com/v1/checkout.js';
@@ -25,24 +26,31 @@ const razorpayCall = ({
     try {
       setLoading(true);
       const result = await fetch(baseURL + '/api/v1/payment/create-order', {
-        Method: 'POST',
-        Headers: {
+        method: 'POST',
+        headers: {
           Accept: 'application.json',
           'Content-Type': 'application/json'
         },
-        Body: {
+        body: JSON.stringify({
           amount: orderAmount
-        },
-        Cache: 'default'
-      });
+        }),
+        cache: 'default'
+      }).then(res => res.json());
       const {
         amount,
         id,
         currency
-      } = result.data.data;
+      } = result.data;
       const {
         data
-      } = await axios.get(baseURL + '/api/v1/payment/get-razorpay-key');
+      } = await fetch(baseURL + '/api/v1/payment/get-razorpay-key', {
+        method: 'GET',
+        headers: {
+          Accept: 'application.json',
+          'Content-Type': 'application/json'
+        },
+        cache: 'default'
+      }).then(res => res.json());
       const options = {
         key: data.data,
         amount: amount.toString(),
@@ -51,13 +59,21 @@ const razorpayCall = ({
         description: description,
         order_id: id,
         handler: async function (response) {
-          const result = await axios.post(baseURL + '/api/v1/payment/pay-order', {
-            amount: amount,
-            razorpayPaymentId: response.razorpay_payment_id,
-            razorpayOrderId: response.razorpay_order_id,
-            razorpaySignature: response.razorpay_signature,
-            paymentType: 1
-          });
+          const result = await fetch(baseURL + '/api/v1/payment/pay-order', {
+            method: 'POST',
+            headers: {
+              Accept: 'application.json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              amount: amount,
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpayOrderId: response.razorpay_order_id,
+              razorpaySignature: response.razorpay_signature,
+              paymentType: paymentType
+            }),
+            cache: 'default'
+          }).then(res => res.json());
           alert(result.data.message);
         },
         prefill: {
