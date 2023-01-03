@@ -70,7 +70,7 @@ const razorpayCall = ({
             }),
             cache: 'default'
           }).then(res => res.json());
-          alert(result.data.message);
+          alert(result.message);
         },
         prefill: {
           name: preFillName,
