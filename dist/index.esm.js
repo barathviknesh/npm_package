@@ -9,7 +9,8 @@ const razorpayCall = ({
   theme,
   setLoading,
   baseURL,
-  paymentType
+  paymentType,
+  callBackResponse = () => false
 }) => {
   const script = document.createElement('script');
   script.src = 'https://checkout.razorpay.com/v1/checkout.js';
@@ -70,7 +71,7 @@ const razorpayCall = ({
             }),
             cache: 'default'
           }).then(res => res.json());
-          alert(result.message);
+          callBackResponse(result);
         },
         prefill: {
           name: preFillName,
